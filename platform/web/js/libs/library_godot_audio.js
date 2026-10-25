@@ -121,10 +121,15 @@ class Sample {
 
 	/**
 	 * Gets the audio buffer of the sample.
+	 * The buffer is shared between all sample nodes playing this sample, as
+	 * `AudioBufferSourceNode`s only read from it.
 	 * @returns {AudioBuffer}
 	 */
 	getAudioBuffer() {
-		return this._duplicateAudioBuffer();
+		if (this._audioBuffer == null) {
+			throw new Error('couldn\'t get a null audioBuffer');
+		}
+		return this._audioBuffer;
 	}
 
 	/**
@@ -143,31 +148,6 @@ class Sample {
 	clear() {
 		this.setAudioBuffer(null);
 		GodotAudio.Sample.delete(this.id);
-	}
-
-	/**
-	 * Returns a duplicate of the stored audio buffer.
-	 * @returns {AudioBuffer}
-	 */
-	_duplicateAudioBuffer() {
-		if (this._audioBuffer == null) {
-			throw new Error('couldn\'t duplicate a null audioBuffer');
-		}
-		/** @type {Array<Float32Array>} */
-		const channels = new Array(this._audioBuffer.numberOfChannels);
-		for (let i = 0; i < this._audioBuffer.numberOfChannels; i++) {
-			const channel = new Float32Array(this._audioBuffer.getChannelData(i));
-			channels[i] = channel;
-		}
-		const buffer = GodotAudio.ctx.createBuffer(
-			this.numberOfChannels,
-			this._audioBuffer.length,
-			this._audioBuffer.sampleRate
-		);
-		for (let i = 0; i < channels.length; i++) {
-			buffer.copyToChannel(channels[i], i, 0);
-		}
-		return buffer;
 	}
 }
 
