@@ -912,7 +912,7 @@ void RendererViewport::draw_viewports(bool p_swap_buffers) {
 					region.size.width = region.size.width / double(vp->size.width) * double(vp->internal_size.width);
 					region.size.height = region.size.height / double(vp->size.height) * double(vp->internal_size.height);
 					region.position.x = region.position.x / double(vp->size.width) * double(vp->internal_size.width);
-					region.position.y = region.position.x / double(vp->size.height) * double(vp->internal_size.height);
+					region.position.y = region.position.y / double(vp->size.height) * double(vp->internal_size.height);
 				}
 
 				// Sometimes the openxr swapchain has been recreated but the viewport has not been
